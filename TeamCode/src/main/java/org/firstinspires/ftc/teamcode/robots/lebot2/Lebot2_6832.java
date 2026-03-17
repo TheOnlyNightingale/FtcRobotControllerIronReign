@@ -307,12 +307,7 @@ public class Lebot2_6832 extends OpMode {
             handleTelemetry(robot.turret.getTelemetry(false), "Turret", packet);
         }
 
-        telemetry.addData("Reloc_Samples", robot.relocSamples.size());
-        telemetry.addData("Reloc_Spread", robot.computeSpread(robot.relocSamples)); // Current batch spread
-
-        // Current corrected pose
-        Pose2d currentPose = robot.driveTrain.getPose();
-        telemetry.addData("Pose", currentPose.position);
+        handleTelemetry(robot.relocalizer.getTelemetry(), "Relocalizer", packet);
     }
 
     private void handleTelemetry(Map<String, Object> telemetryMap, String name, TelemetryPacket packet) {
