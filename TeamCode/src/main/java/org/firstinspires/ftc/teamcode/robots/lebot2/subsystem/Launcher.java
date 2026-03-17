@@ -135,6 +135,7 @@ public class Launcher implements Subsystem {
     public static double BALL_EXIT_DROP_THRESHOLD = 80; // deg/s drop between cycles to count as ball exit
     public static int BALL_EXIT_EXPECTED_COUNT = 3;     // end FIRING after this many detected exits
     public static double BALL_EXIT_COOLDOWN_MS = 200;   // ignore drops within this window of a previous detection
+    private int variableBallExitCount = BALL_EXIT_EXPECTED_COUNT;
 
     // Launch timing for TPU ramp design
     public static double FIRING_TIME = 1.5;       // seconds — hard timeout, backup for ball exit detection
@@ -695,6 +696,16 @@ public class Launcher implements Subsystem {
             speedAtFireApproval = currentSpeed;
             fireRequested = false;
 
+            if(loader != null && loader.chamberSensor != null){
+                variableBallExitCount = loader.chamberSensor.getBallCount();
+                // if detects 0 balls, attempts to shoot once just in case
+                if (variableBallExitCount <= 0){
+                    variableBallExitCount = 1;
+                }
+            } else {
+                variableBallExitCount = BALL_EXIT_EXPECTED_COUNT;
+            }
+
             // Claim resources and start firing
             //claimResources();
             state = LaunchState.FIRING;
@@ -757,7 +768,7 @@ public class Launcher implements Subsystem {
             }
             previousSpeed = currentSpeed;
 
-            if (ballExitCount >= BALL_EXIT_EXPECTED_COUNT) {
+            if (ballExitCount >= variableBallExitCount) {
                 state = LaunchState.COMPLETE;
                 return;
             }
@@ -1037,7 +1048,7 @@ public class Launcher implements Subsystem {
             telemetry.put("Paddle Pos", paddle.getPendingPosition());
             telemetry.put("Pass-Through", passThroughMode ? "ON" : "off");
             telemetry.put("Fire Requested", fireRequested);
-            telemetry.put("Ball Exits", ballExitCount + " / " + BALL_EXIT_EXPECTED_COUNT);
+            telemetry.put("Ball Exits", ballExitCount + " / " + variableBallExitCount);
         }
 
         return telemetry;

@@ -36,7 +36,7 @@ public class DriverControls implements TelemetryProvider {
 
     // Configuration
     public static double THROTTLE_DAMPENER = .7;
-    public static double BACKWARD_DAMP = .4;
+    public static double BACKWARD_DAMP = .7;
     public static double FORWARD_DAMP = .9;
     public static double DRIVE_DAMPENER = .7;
     public static double SLOW_MODE_DAMPENER = 0.3;

@@ -796,18 +796,6 @@ public class Missions implements TelemetryProvider {
                 robot.driveTrain.getPose());
     }
 
-    public void averageFrames() {
-        if (!prepareForNewMission()) {
-            return;
-        }
-        currentMission = Mission.TUNING_VISION_POS;
-        missionState = MissionState.RUNNING;
-        missionTimer.reset();
-        robot.vision.setPipeline(Vision.Pipeline.DECODE);
-        robot.collectRelocSample();
-        robot.applyFilteredCorrection();
-    }
-
     /**
      * Start the pre-match health check mission.
      * Sequences through battery, pinpoint, turns, flywheel, launch, intake, and vision checks.
